@@ -1,0 +1,32 @@
+<project name="freimap" basedir="." default="jar">
+    <path id="classpath">
+        <fileset dir="lib" includes="*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="freimap.jar"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac srcdir="." destdir="bin" 
+                classpathref="classpath"
+                includes="net/**"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="freimap.jar">
+            <fileset dir="bin"/>
+            <fileset dir=".">
+                <include name="gfx/*.png"/>
+                <include name="data/*.xml"/>
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="net/relet/freimap/Visor"/>
+                <attribute name="Class-Path" value="lib/jcommon-1.0.8.jar lib/jfreechart-1.0.4.jar lib/mysql-connector-java-5.0.5-bin.jar lib/xstream-1.2.2-20061111.171510-1.jar lib/xpp3_min-1.1.4c.jar lib/jyaml-lib-1.0-beta-3.jar"/>
+            </manifest>
+        </jar>
+    </target>
+
+</project>

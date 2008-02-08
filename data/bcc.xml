@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ffmap version="1.0">
+<node coords="52.5211095075655, 13.416490629315376" height="3" ip="77.87.52.17" tooltip="node02" nodeclass="olsr"/>
+<node coords="52.52097363991847, 13.416472524404526" height="1" ip="77.87.52.33" tooltip="node03" nodeclass="olsr"/>
+<node coords="52.52093895892023, 13.416744098067284" height="2" ip="77.87.52.49" tooltip="node04" nodeclass="olsr"/>
+<node coords="52.52106340237502, 13.416338413953781" height="3" ip="77.87.52.113" tooltip="node08" nodeclass="olsr"/>
+<node coords="52.52081329107373, 13.41602124273777" height="3" ip="77.87.52.161" tooltip="node11" nodeclass="olsr"/>
+<node coords="52.52066518207885, 13.416312932968138" height="3" ip="77.87.52.177" tooltip="node12" nodeclass="olsr"/>
+<node coords="52.52102423332562, 13.416339084506033" height="3" ip="77.87.52.193" tooltip="node13" nodeclass="olsr"/>
+<node coords="52.52102953746977, 13.416292145848274" height="3" ip="77.87.52.209" tooltip="node14" nodeclass="olsr"/>
+<node coords="52.520896525661605, 13.416445031762123" height="2" ip="77.87.52.225" tooltip="node15" nodeclass="olsr"/>
+<node coords="52.52098424821835, 13.416662961244583" height="3" ip="77.87.52.241" tooltip="node16" nodeclass="olsr"/>
+<node coords="52.52077126570718, 13.41660663485527" height="1" ip="77.87.53.1" tooltip="node17" nodeclass="olsr"/>
+<node coords="52.5208194112694, 13.416182175278664" height="3" ip="77.87.53.17" tooltip="node18" nodeclass="olsr"/>
+<node coords="52.52092386247715, 13.416256606578825" height="2" ip="77.87.53.33" tooltip="node19" nodeclass="olsr"/>
+<node coords="52.520804722798374, 13.41628611087799" height="1" ip="77.87.53.65" tooltip="node21" nodeclass="olsr"/>
+<node coords="52.52078717822935, 13.415999785065651" height="2" ip="77.87.52.81" tooltip="node22" nodeclass="olsr"/>
+<node coords="52.52084062794105, 13.416363894939423" height="2" ip="77.87.53.97" tooltip="node23" nodeclass="olsr"/>
+<node coords="52.52100505679912, 13.41641016304493" height="3" ip="77.87.53.113" tooltip="node24" nodeclass="olsr"/>
+<node coords="52.52101076895683, 13.416270688176155" height="3" ip="77.87.53.129" tooltip="node25" nodeclass="olsr"/>
+<node coords="52.52103688166831, 13.416320309042929" height="3" ip="77.87.53.177" tooltip="node28" nodeclass="olsr"/>
+</ffmap>
+

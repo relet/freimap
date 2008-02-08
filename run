@@ -1,0 +1,5 @@
+if [ x$JAVA == x ]; then
+	JAVA=java
+fi
+
+$JAVA -Xmx250m -jar freimap*.jar

@@ -1,0 +1,2 @@
+del freimap.jar
+javac -source 1.5 -nowarn -cp lib/mysql-connector-java-5.0.5-bin.jar;lib/jfreechart-1.0.4.jar;lib/jcommon-1.0.8.jar;lib/xstream-1.2.2-20061111.171510-1.jar;lib/xpp3_min-1.1.4c.jar;lib/jyaml-lib-1.0-beta-3.jar -Xlint:unchecked  net/relet/freimap/*.java net/relet/freimap/background/*.java && jar cvfm freimap.jar META-INF\MANIFEST.MF LICENCE README net\relet\freimap\*.class net\relet\freimap\background\*.class gfx\*.* data\*.*

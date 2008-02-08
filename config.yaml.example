@@ -1,0 +1,33 @@
+# freimap configuration file. Please refer to http://www.yaml.org/start.html or http://www.yaml.org/refcard.html for syntax info.
+# this is a working configuration for olsrd on localhost 
+# node positions are available for freifunk nodes in berlin.
+--- 
+version: svn
+subversion: 60
+
+backgrounds:
+  openstreetmap: 
+    type: openstreetmap
+    # use blank, images or openstreetmap
+    delay: 0
+    filter: dark
+    cachedir: ./gfx/cache
+
+  bcc-a:
+    type: images
+    images:
+     - gfx:   gfx/bcc-a-uni.png  
+       lat:   52.52089531804967
+       lon:   13.416420177909853
+       scale: 1500000  
+
+datasources:
+  nodes-in-berlin:
+    class: net.relet.freimap.FreifunkMapDataSource
+    url: "file:data/ffmap.xml"
+
+  olsrd-localhost:
+    class: net.relet.freimap.OLSRDDataSource
+    host: localhost
+    port: 2004
+    nodesource: nodes-in-berlin 
