@@ -18,7 +18,7 @@ public class NameFinder extends TimerTask {
 
   private Timer timer = new Timer();
 
-  private String location = "http://freimap.berlios.de";
+  private String location = "http://relet.net/trac/freimap";
 
   public void setLocation(double lat, double lon, int zoom) {
     this.lat = lat;

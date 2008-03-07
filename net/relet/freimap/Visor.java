@@ -90,7 +90,7 @@ public class Visor extends JFrame implements WindowListener {
   JMenuItem mi_about  = new JMenu("About");
   
   public Visor() {
-    super("http://freimap.berlios.de");
+    super("http://relet.net/trac/freimap");
     
     initLayout();
 

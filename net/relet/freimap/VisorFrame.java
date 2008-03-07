@@ -114,7 +114,7 @@ public class VisorFrame extends JPanel implements ComponentListener, MouseListen
 
   Converter converter = new Converter();
 
-  String location = "http://freimap.berlios.de";
+  String location = "http://relet.net/trac/freimap";
   NameFinder namefinder = new NameFinder();
 
   public VisorFrame() {
