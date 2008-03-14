@@ -44,6 +44,9 @@ public class MysqlDataSource implements DataSource {
   private String TABLE_LINKS;
   private String TABLE_NODES;
   private boolean nodeDataOnly = false;
+
+  DataSource nodeSource;
+  String sNodeSource;
   
   public MysqlDataSource() {
     this(null, null, null, null, false);
@@ -64,6 +67,8 @@ public class MysqlDataSource implements DataSource {
 
     TABLE_LINKS = Configurator.getS(new String[]{"tables", "links"}, conf);
     TABLE_NODES = Configurator.getS(new String[]{"tables", "nodes"}, conf);
+
+    sNodeSource = Configurator.getS("nodesource", conf);
     //todo: dummy check input
     try {
       String odbcurl="jdbc:mysql://"+host+"/"+db;
@@ -83,21 +88,37 @@ public class MysqlDataSource implements DataSource {
   }
   
   private void updateNodeList() throws SQLException{
-    Statement s = conn.createStatement();
-    ResultSet r = s.executeQuery("SELECT * from "+TABLE_NODES);
-    String ip = null;
-    while (r.next()) {
-      try {
-        ip = r.getString("node");
-      } catch (Exception ex) {
-        ip = r.getString("ip");
+    if ((nodeSource == null) && (sNodeSource != null)) {
+      nodeSource=Visor.sources.get(sNodeSource);
+      sNodeSource = null;
+    }
+
+    if (nodeSource!=null) {
+      Vector<FreiNode> nodev = nodeSource.getNodeList();
+      Iterator<FreiNode> nodes=nodev.iterator();
+      while (nodes.hasNext()) {
+        FreiNode node = nodes.next();
+        nodeList.remove(node);
+        nodeList.add(node);
+        nodeByName.put(node.id, node);
       }
-      double lon = r.getDouble("lon"),
-             lat = r.getDouble("lat");
-      FreiNode node=new FreiNode(ip, lon, lat);
-      nodeList.remove(node);
-      nodeList.add(node);
-      nodeByName.put(node.id, node);
+    } else {
+      Statement s = conn.createStatement();
+      ResultSet r = s.executeQuery("SELECT * from "+TABLE_NODES);
+      String ip = null;
+      while (r.next()) {
+        try {
+          ip = r.getString("node");
+        } catch (Exception ex) {
+          ip = r.getString("ip");
+        }
+        double lon = r.getDouble("lon"),
+              lat = r.getDouble("lat");
+        FreiNode node=new FreiNode(ip, lon, lat);
+        nodeList.remove(node);
+        nodeList.add(node);
+        nodeByName.put(node.id, node);
+      }
     }
   }
   
@@ -127,7 +148,8 @@ public class MysqlDataSource implements DataSource {
           availmap.put(id, new Float(avail));
         }
       } catch (Exception ex) {
-        ex.printStackTrace();
+        System.err.println("Availability table not found or broken. Ignoring.");
+        //ex.printStackTrace();
         availmap=null;
       }
     }
@@ -183,6 +205,7 @@ public class MysqlDataSource implements DataSource {
           if (time>stamp) closest=stamp; 
           else break;
         }
+        System.err.println(closest);
         return closest;
       } catch (ConcurrentModificationException ex) {
         //ok, we will have to try again.
