@@ -205,7 +205,6 @@ public class MysqlDataSource implements DataSource {
           if (time>stamp) closest=stamp; 
           else break;
         }
-        System.err.println(closest);
         return closest;
       } catch (ConcurrentModificationException ex) {
         //ok, we will have to try again.
