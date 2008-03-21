@@ -22,6 +22,7 @@
 
 package net.relet.freimap;
 
+import java.awt.Color;
 import java.util.*;
 
 import org.jfree.chart.*;
@@ -193,7 +194,8 @@ public class LinkInfo {
       }
     } else if (plot instanceof XYPlot) {
       XYPlot xyplot=(XYPlot)plot;
-      xyplot.setBackgroundPaint(VisorFrame.bgcolor2);
+      //xyplot.setBackgroundPaint(VisorFrame.bgcolor2);
+      xyplot.setBackgroundPaint(Color.black);
       xyplot.setDomainAxis(new DateAxis());
       sexupAxis(xyplot.getDomainAxis());
       sexupAxis(xyplot.getRangeAxis());
@@ -201,7 +203,8 @@ public class LinkInfo {
   }
   private void sexupLayout(JFreeChart chart) {
     chart.setAntiAlias(true);
-    chart.setBackgroundPaint(VisorFrame.bgcolor2);
+    //chart.setBackgroundPaint(VisorFrame.bgcolor2);
+    chart.setBackgroundPaint(Color.black);
     chart.setBorderVisible(false);
     TextTitle title=chart.getTitle();
     title.setFont(VisorFrame.smallerfont);

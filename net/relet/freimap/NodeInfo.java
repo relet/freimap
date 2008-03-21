@@ -22,6 +22,7 @@
 
 package net.relet.freimap;
 
+import java.awt.Color;
 import java.util.*;
 
 import org.jfree.chart.*;
@@ -114,13 +115,15 @@ public class NodeInfo {
   }
   private void sexupLayout(JFreeChart chart) {
     chart.setAntiAlias(true);
-    chart.setBackgroundPaint(VisorFrame.bgcolor);
+//    chart.setBackgroundPaint(VisorFrame.bgcolor);
+    chart.setBackgroundPaint(Color.black);
     chart.setBorderVisible(false);
     TextTitle title=chart.getTitle();
     title.setFont(VisorFrame.smallerfont);
     title.setPaint(VisorFrame.fgcolor);
     XYPlot plot=chart.getXYPlot();
-    plot.setBackgroundPaint(VisorFrame.bgcolor);
+//    plot.setBackgroundPaint(VisorFrame.bgcolor);
+    plot.setBackgroundPaint(Color.black);
     plot.setDomainAxis(new DateAxis());
     sexupAxis(plot.getDomainAxis());
     sexupAxis(plot.getRangeAxis());
