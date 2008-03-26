@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ x$JAVAC == x ];
 then
 	JAVAC=javac
