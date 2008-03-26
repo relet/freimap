@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ x$JAVA == x ]; then
+if [ -z $JAVA ]; then
 	JAVA=java
 fi
 
