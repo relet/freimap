@@ -29,7 +29,7 @@ public class LatLonJsDataSource implements DataSource {
       System.out.println("fetching node data from URL: " + sServerURL);
       System.out.print("This may take a while ... ");
       
-      BufferedReader in = new BufferedReader(new FileReader(sServerURL));
+      BufferedReader in = new BufferedReader(new InputStreamReader(new URL(sServerURL).openStream()));
       while (true) {
         String line=in.readLine();
         if (line==null) break;
