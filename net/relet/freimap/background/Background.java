@@ -208,8 +208,9 @@ public abstract class Background implements VisorLayer {
 		return createBlankBackground();
 	}
  
- //these two are ignored.
+ //these are ignored.
  public void mouseMoved(double lat, double lon) {}
  public void mouseClicked(double lat, double lon, int button) {}
+ public void setDisplayFilter(String match, int type, boolean cases, boolean regex) {}
 
 }

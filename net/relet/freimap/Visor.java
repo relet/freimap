@@ -87,15 +87,18 @@ public class Visor extends JFrame implements WindowListener {
   
   VisorFrame viz;
 
+  /* this will be implemented some future time */
   JMenuBar  bar = new JMenuBar();
   JMenu     m_source  = new JMenu("Source");
   JMenuItem mi_open   = new JMenuItem("Open...");
   JMenu     m_back    = new JMenu("Background");
   JMenuItem mi_select = new JMenuItem("Select...");
   JMenu     m_view    = new JMenu("View");
+  JMenuItem mi_filter = new JMenuItem("Display Filter...");
   JMenu     m_help    = new JMenu("Help");
-  JMenuItem mi_about  = new JMenu("About");
+  JMenuItem mi_about  = new JMenuItem("About");
   
+
   public Visor() {
     super("http://relet.net/trac/freimap");
     
@@ -126,12 +129,21 @@ public class Visor extends JFrame implements WindowListener {
     Container c = this.getContentPane();
     
     m_source.add(mi_open);
+    mi_about.addActionListener(viz);
     m_help.add(mi_about);
-    bar.add(m_source);
-    bar.add(m_back);
+    //bar.add(m_source);
+    //bar.add(m_back);
+    mi_filter.addActionListener(viz);
+    m_view.add(mi_filter);
     bar.add(m_view);
     bar.add(m_help);
     this.setJMenuBar(bar);
+
+    Color c_menu = new Color(12,64,12);
+    bar.setBackground(c_menu);
+    m_view.setForeground(viz.fgcolor);
+    m_help.setForeground(viz.fgcolor);
+
     c.add(viz);
     c.setBackground(Color.black);
     this.pack();

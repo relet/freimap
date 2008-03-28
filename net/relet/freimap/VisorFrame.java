@@ -22,41 +22,14 @@
 
 package net.relet.freimap;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.*;
 import java.io.File;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Vector;
+import java.util.*;
 
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import org.ho.yaml.Yaml;
@@ -67,7 +40,7 @@ todo dimension -> configfile
      rename x and y into lon and lat
 */
 
-public class VisorFrame extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
+public class VisorFrame extends JPanel implements ActionListener, ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
   double scale=1.0d;  // current scaling
   int zoom = 0;       // zoom factor, according to OSM tiling
   int w=800,h=600;    //screen width, hight
@@ -125,6 +98,7 @@ public class VisorFrame extends JPanel implements ComponentListener, MouseListen
     this.addMouseWheelListener(this);
     runtime=Runtime.getRuntime();
     
+    initDialogs();
     initZoom(0, cx, cy);
   }
 
@@ -258,11 +232,11 @@ public class VisorFrame extends JPanel implements ComponentListener, MouseListen
           break;
         }
       }
-      g.drawImage(image, 20, 60+i*20, this);
+      g.drawImage(image, 20, 40+i*20, this);
       if (layer.equals(activeLayer)) {
         g.setFont(mainfontbold);
       }
-      g.drawString(layerids.elementAt(i), 50, 75+i*20);
+      g.drawString(layerids.elementAt(i), 50, 55+i*20);
     }
  
     //draw play/stop button
@@ -275,20 +249,20 @@ public class VisorFrame extends JPanel implements ComponentListener, MouseListen
     //draw status bars
     g.setStroke(new BasicStroke((float)1f));
     Shape header = new Rectangle2D.Double(-1,-1,w+2,30);
-    Shape menus = new Rectangle2D.Double(-1,30,w+2,27);
+    //Shape menus = new Rectangle2D.Double(-1,30,w+2,27);
     Shape footer = new Rectangle2D.Double(-1,h-30,w+2,30);
     g.setColor(bgcolor);
     g.fill(header);
-    g.fill(menus);
+    //g.fill(menus);
     g.fill(footer);
     g.setColor(fgcolor);
     g.draw(header);
-    g.draw(menus);
+    //g.draw(menus);
     g.draw(footer);
     g.setFont(mainfont);
     //location = namefinder.getLocation();
     g.drawString("{ "+location+" };", 10, 20); //TODO: replace this string by location information gathered from osm namefinder api :) 
-    g.drawString("coom " + zoom, w/4, 20);
+    g.drawString("zoom " + zoom, w/4, 20);
     g.drawString("lon " + converter.viewXToLon(mousex), w/2, 20);
     g.drawString("lat " + converter.viewYToLat(mousey), 3*w/4, 20);
     g.drawString(new Date(crtTime*1000).toString(), 10, h-10);
@@ -487,5 +461,71 @@ public class VisorFrame extends JPanel implements ComponentListener, MouseListen
       }
     }
     if (repaint) this.repaint();
+  }
+
+/* DIALOGS ***************************************************************************/ 
+  JDialog about=new JDialog();
+  JDialog filter=new JDialog();
+
+  JCheckBox  filterEnable   = new JCheckBox("Enable Display Filter");
+  JTextField filterText     = new JTextField(30);
+  JComboBox  filterRange    = new JComboBox(new String[]{"IP address", "identifier"});
+  JCheckBox  caseSens       = new JCheckBox("Case Sensitive");
+  JCheckBox  regEx          = new JCheckBox("Regular Expression");
+  JButton    filterApply    = new JButton("Apply");
+  public void initDialogs() {
+      //about dialog foo
+      about.setTitle("About freimap");
+      Container c = about.getContentPane();
+      JTextArea text = new JTextArea("\n  freimap - \n" + 
+                       "  Free and open source software since 2006.\n" + 
+                       "  Licence: GPL.\n\n" + 
+                       "  Credits: \n"+
+                       "\tThomas Hirsch \t- Coding\n" + 
+                       "\tAlexander Morlang \t- Networking\n" + 
+                       "\tFraunhofer FOKUS \t- Support\n" + 
+                       "\tRobert Schuster \t- Coding\n" + 
+                       "\tFrithjof Hammer \t- Testing\n" + 
+                       "\tand all of the freifunk communities.\n");
+      text.setEditable(false);
+      text.setColumns(40);
+      text.setRows(10);
+      text.setBackground(Color.black);
+      text.setForeground(Color.green);
+      c.add(text);
+
+      //display filter dialog
+      filter.setTitle("Display Filter");
+      c = filter.getContentPane();
+      c.setBackground(Color.black);
+      c.setLayout(new GridLayout(6,1));
+      
+      c.add(filterEnable);
+      c.add(filterText);
+      c.add(filterRange);
+      c.add(caseSens);
+      c.add(regEx);
+      c.add(filterApply);
+
+      filterApply.addActionListener(this);
+  }
+
+  public void actionPerformed (ActionEvent e) {
+    if (e.getSource().equals(filterApply)) {
+      boolean doFilter = filterEnable.isSelected();
+      String match = doFilter?filterText.getText():null;
+      Iterator<VisorLayer> i = layers.iterator();
+      while(i.hasNext()) {
+        i.next().setDisplayFilter(match, filterRange.getSelectedIndex(), caseSens.isSelected(), regEx.isSelected());
+      }
+    } else 
+    if (e.getActionCommand().equals("About")) {
+      about.pack();
+      about.setVisible(true);
+    } else 
+    if (e.getActionCommand().equals("Display Filter...")) {
+      filter.pack();
+      filter.setVisible(true);
+    }
   }
 }

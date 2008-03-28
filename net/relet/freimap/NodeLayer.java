@@ -22,29 +22,12 @@
 
 package net.relet.freimap;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.*;
+import java.awt.geom.*;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Vector;
-import java.util.Iterator;
+import java.util.*;
+import java.util.regex.*;
 
 import javax.swing.border.LineBorder;
 
@@ -95,6 +78,11 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
   long crtTime;
 
   int visible = VISIBILITY_FULL;
+
+  String  filter=null;
+  int     filterType  = 0;
+  boolean filterCase  = false;
+  boolean filterRegEx = false;
 
   public NodeLayer(DataSource source) {
     this.source=source;
@@ -242,6 +230,8 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
     for (int i=0; i<nodes.size(); i++) {
       FreiNode node=(FreiNode)nodes.elementAt(i);
       if (node.equals(uplink)) continue;
+      if (!matchFilter(node)) continue;
+      
       if (node.unlocated) {
         g.setColor(activeyellow);
       } else if (availmap!=null) {
@@ -607,5 +597,39 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
        linkinfo.put(selectedLink, info);
      } 
    } 
+ }
+
+ public void setDisplayFilter(String match, int type, boolean cases, boolean regex) {
+   filter=match;
+   filterType=type;
+   filterCase=cases;
+   filterRegEx=regex;
+ }
+
+ boolean matchFilter(FreiNode node) {
+   if (filter==null) return true;
+   int regexCase = filterCase?0:Pattern.CASE_INSENSITIVE;
+   try {
+     switch (filterType) {
+       case FILTER_IP: {
+         if (filterRegEx) return Pattern.compile(filter, regexCase).matcher(node.id).matches();
+         if (filterCase) {
+           return (node.id.indexOf(filter)>-1);
+         } else {
+           return (node.id.toLowerCase().indexOf(filter.toLowerCase())>-1);
+         }
+       } 
+       default: {
+         if (filterRegEx) return Pattern.compile(filter, regexCase).matcher(node.fqid).matches();
+         if (filterCase) {
+           return (node.fqid.indexOf(filter)>-1);
+         } else {
+           return (node.fqid.toLowerCase().indexOf(filter.toLowerCase())>-1);
+         }
+       }
+     }
+   } catch (Exception ex) {
+     return true;
+   }
  }
 }

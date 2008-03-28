@@ -92,6 +92,10 @@ public interface VisorLayer {
  public int getVisibility();
  /** toggles visibility between available modes */
  public void toggleVisibility();
+ /** sets or unsets display filter */
+ public static final int FILTER_IP         = 0 ;
+ public static final int FILTER_IDENTIFIER = 1 ;
+ public void setDisplayFilter(String match, int type, boolean cases, boolean regex);
 
  /**
   * Sets the current point in time to be displayed
