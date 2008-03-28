@@ -330,11 +330,11 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
       case MouseEvent.BUTTON1: {
         switch (e.getClickCount()) {
           case 1: {
-            if ((mousex>20) && (mousex<40)&& (mousey>60) && (mousey<60+layers.size()*20)) {
-              int selectedLayer = (mousey-60) / 20;
+            if ((mousex>20) && (mousex<40)&& (mousey>40) && (mousey<40+layers.size()*20)) {
+              int selectedLayer = (mousey-40) / 20;
               layers.elementAt(selectedLayer).toggleVisibility();
-            } else if ((mousex>40) && (mousex<150)&& (mousey>60) && (mousey<60+layers.size()*20)) {
-              int selectedLayer = (mousey-60) / 20;
+            } else if ((mousex>40) && (mousex<150)&& (mousey>40) && (mousey<40+layers.size()*20)) {
+              int selectedLayer = (mousey-40) / 20;
               activeLayer.mouseMoved(0,0);
               activeLayer = layers.elementAt(selectedLayer);
             } else if ((mousey>h-100)&&(mousex >= timelinex0)&&(mousex <= timelinex1)) {
@@ -383,7 +383,7 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
     mrefx = e.getX();
     mrefy = e.getY();
     mouseMode = e.getButton();
-    refPosition = (mrefy-60) / 20;
+    refPosition = (mrefy-40) / 20;
     refZoom = zoom;
   }
 
@@ -392,8 +392,8 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
     mousey = e.getY();
     if ((mousey>h-100)&&(mousex >= timelinex0)&&(mousex <= timelinex1)) {
       setCurrentTime(mousex-timelinex0);
-    } else if ((mousex>20) && (mousex<150)&& (mousey>60) && (mousey<60+layers.size()*20)) {
-      //int targPosition = (mousey-60) / 20;
+    } else if ((mousex>20) && (mousex<150)&& (mousey>40) && (mousey<40+layers.size()*20)) {
+      //int targPosition = (mousey-40) / 20;
     } else {
       switch(mouseMode) {
         case MouseEvent.BUTTON1: {
@@ -437,9 +437,9 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
   public void mouseEntered(MouseEvent e) {}
   public void mouseExited(MouseEvent e) {}
   public void mouseReleased(MouseEvent e) {
-    if ((mousex>20) && (mousex<150)&& (mousey>60) && (mousey<60+layers.size()*20)) {
+    if ((mousex>20) && (mousex<150)&& (mousey>40) && (mousey<40+layers.size()*20)) {
       if (refPosition >= layers.size()) return;
-      int targPosition = (mousey-60) / 20;
+      int targPosition = (mousey-40) / 20;
       VisorLayer ref = layers.elementAt(refPosition),
 		 swap = layers.elementAt(targPosition);
       String     refID = layerids.elementAt(refPosition),

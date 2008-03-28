@@ -168,6 +168,9 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
     if ((links != null) && (links.size()>0)) {
       for(int i = 0; i < links.size(); i++) {
         FreiLink link = links.elementAt(i);
+
+        if (!(matchFilter(link.from)||matchFilter(link.to))) continue;
+
         boolean isneighbourlink = (link.from.equals(selectedNode)||link.to.equals(selectedNode));
         if (link.to.equals(uplink)) {
           g.setColor(activeblue);
