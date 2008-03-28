@@ -96,6 +96,8 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
     this.addMouseListener(this);
     this.addMouseMotionListener(this);
     this.addMouseWheelListener(this);
+    this.registerKeyboardAction(this, "zoomIn", KeyStroke.getKeyStroke('+'), JComponent.WHEN_FOCUSED);
+    this.registerKeyboardAction(this, "zoomOut", KeyStroke.getKeyStroke('-'), JComponent.WHEN_FOCUSED);
     runtime=Runtime.getRuntime();
     
     initDialogs();
@@ -410,30 +412,32 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
         case MouseEvent.BUTTON3: {
           int steps = (mousey - mrefy) / 20;
           zoom = Math.min(22, Math.max(0, refZoom + steps));
-   	  initZoom(zoom, mrefx, mrefy);
-	  scale = converter.getScale();
+      	  initZoom(zoom, mrefx, mrefy);
+	        scale = converter.getScale();
           repaint();
-       }
+        }
       }
     }
   }
    
   public void mouseWheelMoved(MouseWheelEvent e) {
-    saveScale();
-    
     Point p = e.getPoint();
-    
-	zoom += ((e.getWheelRotation() < 0) ? +1 : -1);
-	zoom = Math.min(22, Math.max(0, zoom));
-	
-	initZoom(zoom, p.x, p.y);
-	
-    // Calculate the unit size
-	scale = converter.getScale();
-
-	repaint();
-
+	  modifyZoom((e.getWheelRotation() < 0) ? +1 : -1, p.x, p.y);
   }
+
+  void modifyZoom(int steps) {
+    modifyZoom(steps, w/2, h/2);
+  }
+  void modifyZoom(int steps, int x, int y) {
+    saveScale();
+    zoom += steps;
+    zoom = Math.min(22, Math.max(0, zoom));
+    initZoom(zoom, x, y);
+    // Calculate the unit size
+    scale = converter.getScale();
+    repaint();
+  }
+
   public void mouseEntered(MouseEvent e) {}
   public void mouseExited(MouseEvent e) {}
   public void mouseReleased(MouseEvent e) {
@@ -518,6 +522,12 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
       while(i.hasNext()) {
         i.next().setDisplayFilter(match, filterRange.getSelectedIndex(), caseSens.isSelected(), regEx.isSelected());
       }
+    } else 
+    if (e.getActionCommand().equals("zoomIn")) {
+      modifyZoom(+1);
+    } else 
+    if (e.getActionCommand().equals("zoomOut")) {
+      modifyZoom(-1);
     } else 
     if (e.getActionCommand().equals("About")) {
       about.pack();
