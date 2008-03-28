@@ -42,6 +42,7 @@ public class Visor extends JFrame implements WindowListener {
     sources = new HashMap<String, DataSource>();
     try {
       HashMap<String, Object> ds = (HashMap<String, Object>)config.get("datasources");
+      HashMap<String, HashMap<String, Object>> ds2subconfig = new HashMap<String, HashMap<String, Object>>();
       Iterator<String> i = ds.keySet().iterator();
       while (i.hasNext()) {
         String id   = i.next();
@@ -49,8 +50,14 @@ public class Visor extends JFrame implements WindowListener {
         String claz = config.getS("class", subconfig);
         Class<DataSource> csource=(Class<DataSource>)Class.forName(claz); //this cast cannot be checked!
         DataSource source = csource.newInstance();
-        source.init(subconfig); //initialize datasource with configuration parameters
+        ds2subconfig.put(id, subconfig);
         sources.put(id, source);
+      }
+      Iterator<String> j = sources.keySet().iterator();
+      while (j.hasNext()) {
+        String id = j.next();
+        DataSource source = sources.get(id);
+        source.init(ds2subconfig.get(id)); //initialize datasource with configuration parameters
       }
     } catch (Exception ex) {
       ex.printStackTrace();

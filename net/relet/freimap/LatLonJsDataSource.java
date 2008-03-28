@@ -38,12 +38,13 @@ public class LatLonJsDataSource implements DataSource {
           String ip = st.nextToken();
           double lat  = Double.parseDouble(st.nextToken());
           double lon  = Double.parseDouble(st.nextToken());
-          int foo   = Integer.parseInt(st.nextToken());
-          String foo2  = st.nextToken(); //gateway?
+          int    isgateway = Integer.parseInt(st.nextToken());
+          String gatewayip = st.nextToken(); 
           String fqid  = st.nextToken();
 
           ip = ip.substring(1,ip.length()-1); //strip single quotes
           fqid = fqid.substring(1,fqid.length()-1);
+          gatewayip = gatewayip.substring(1,gatewayip.length()-1);
 
           // Use ip or coordinates as fqid if tooltip is missing
           if (ip.equals("")) ip=null;
@@ -58,8 +59,18 @@ public class LatLonJsDataSource implements DataSource {
             ip = fqid;
           }
 
-          FreiNode nnode = new FreiNode(ip, fqid, lon, lat);
+          FreiNode nnode;
+          if ((lat<-90d)||(lat>90d)||(lon<-180d)||(lon>180d)) { //obviously bogus. some people do that. 
+            nnode = new FreiNode(ip, fqid);
+          } else {
+            nnode = new FreiNode(ip, fqid, lon, lat);
+          }
           nodes.add(nnode);
+          if (isgateway==1) {
+            nnode.attributes.put("Gateway", "SELF");
+          } else {
+            nnode.attributes.put("Gateway", "OTHER: "+gatewayip);
+          }
           nodeByName.put(nnode.id, nnode);
 
         }

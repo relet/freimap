@@ -315,6 +315,7 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
         Vector<String> infos= new Vector<String>();
         if (showNodeInfo) {
           label = "Node: "+selectedNode.fqid;
+          if (!selectedNode.fqid.equals(selectedNode.id)) infos.add("IP address: "+selectedNode.id);
         	boxw = Math.max(180, g.getFontMetrics(VisorFrame.mainfont).stringWidth(label)+20);
 
           if (availmap!=null) {
@@ -329,14 +330,14 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
             infos.add(key+": "+selectedNode.attributes.get(key));
           }
 
-	  NodeInfo info = nodeinfo.get(selectedNode.id);
-          if (info!=null) {
-	    if (info.status == info.STATUS_AVAILABLE) {
-	      infos.add("min. links: " + info.minLinks );
-	      infos.add("max. links: " + info.maxLinks );
+	    NodeInfo info = nodeinfo.get(selectedNode.id);
+      if (info!=null) {
+	      if (info.status == info.STATUS_AVAILABLE) {
+	        infos.add("min. links: " + info.minLinks );
+	        infos.add("max. links: " + info.maxLinks );
 
-	      if (info.linkCountChart != null) {
-		  info.linkCountChart.draw(g, new Rectangle2D.Float(20, 180, 500, 300));
+	        if (info.linkCountChart != null) {
+		      info.linkCountChart.draw(g, new Rectangle2D.Float(20, 180, 500, 300));
 	      }
             } else if (info.status == info.STATUS_FETCHING) {
               infos.add("retrieving information");
