@@ -2,11 +2,11 @@ package net.relet.freimap;
 
 public final class Converter {
 
-	OSMMercatorProjection projection;
+	OsmMercatorProjection projection;
 
 	public int offsetX, offsetY;
 
-	public void setProjection(OSMMercatorProjection p) {
+	public void setProjection(OsmMercatorProjection p) {
 		projection = p;
 	}
 
@@ -66,7 +66,7 @@ public final class Converter {
 
 	void initZoom(int zoom, int viewX, int viewY) {
 		if (projection == null)
-			projection = new OSMMercatorProjection(0);
+			projection = new OsmMercatorProjection(0);
 
 		// We want to zoom in on the center of our current screen.
 		// Therefore we calculate the centers' lon|lat, set up
@@ -76,7 +76,7 @@ public final class Converter {
 		double lon = projection.xToLong(offsetX + viewX);
 		double lat = projection.yToLat(offsetY + viewY);
 
-		projection = new OSMMercatorProjection(zoom);
+		projection = new OsmMercatorProjection(zoom);
 
 		// Geo coordinates -> new view offset
 		offsetX = (int) lonToWorld(lon) - viewX;

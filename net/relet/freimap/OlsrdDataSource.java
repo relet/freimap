@@ -1,4 +1,4 @@
-/* net.relet.freimap.OLSRDDataSource.java
+/* net.relet.freimap.OlsrdDataSource.java
 
   This file is part of the freimap software available at freimap.berlios.de
 
@@ -26,7 +26,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class OLSRDDataSource implements DataSource {
+public class OlsrdDataSource implements DataSource {
   DotPluginListener dot;
   DataSourceListener listener;
   TreeMap<Long, Vector<FreiLink>> data = new TreeMap<Long, Vector<FreiLink>>();
@@ -43,7 +43,7 @@ public class OLSRDDataSource implements DataSource {
   DataSource nodeSource;
   String sNodeSource;
        
-  public OLSRDDataSource() {
+  public OlsrdDataSource() {
   }
   public void init(HashMap<String, Object> conf) {
     String host = Configurator.getS("host", conf);
@@ -196,9 +196,9 @@ public class OLSRDDataSource implements DataSource {
     BufferedReader in;
     String host;
     int port;
-    OLSRDDataSource parent;
+    OlsrdDataSource parent;
     
-    public DotPluginListener(String host, int port, OLSRDDataSource parent) {
+    public DotPluginListener(String host, int port, OlsrdDataSource parent) {
       this.parent=parent;
       this.host=host;
       this.port=port;
@@ -253,7 +253,7 @@ public class OLSRDDataSource implements DataSource {
           Thread.sleep(1000);
         }
       } catch (SocketTimeoutException ex) {
-        System.err.println("[OLSRDataSource] timeout while trying to connect. "+ex.getMessage());
+        System.err.println("[OlsrdataSource] timeout while trying to connect. "+ex.getMessage());
         return;
       } catch (ConnectException ex) {
         System.err.println("connection to " + host + ":" + port + " failed. Detailed node data won't be available.");

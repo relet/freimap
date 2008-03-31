@@ -16,7 +16,7 @@ package net.relet.freimap;
  * @author Robert Schuster
  *
  */
-public final class OSMMercatorProjection {
+public final class OsmMercatorProjection {
 
 	/**
 	 * Fixed number of pixels in a tile.
@@ -49,7 +49,7 @@ public final class OSMMercatorProjection {
 	
 	final double falseNorthing;
 
-	public OSMMercatorProjection(int zoom) {
+	public OsmMercatorProjection(int zoom) {
 		this.zoom = zoom;
 		
 		tiles = (int) Math.pow(2, zoom);
