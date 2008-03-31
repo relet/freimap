@@ -111,6 +111,21 @@ public class Configurator {
     return null;
   }
 
+
+  public static boolean getB(String[] keys) {
+    return getB(keys, null);
+  }
+  public static boolean getB(String key, HashMap<String, Object> parent) {
+    return getB(new String[]{key}, parent);
+  }
+  public static boolean getB(String[] keys, HashMap<String, Object> parent) {
+    try {
+      return ((Boolean)get(keys, parent)).booleanValue(); 
+    } catch (Exception ex) {
+    }
+    return false;
+  }
+
   @SuppressWarnings("unchecked")
   void parseConfigFile() {
     File found=null;

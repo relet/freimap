@@ -19,14 +19,20 @@ import java.util.*;
 public class LatLonJsDataSource implements DataSource {
 
   Vector<FreiNode> nodes = new Vector<FreiNode>();
+  Vector<FreiLink> links = new Vector<FreiLink>();
   HashMap<String, FreiNode> nodeByName = new HashMap<String, FreiNode>();
+
+  long initTime = System.currentTimeMillis()/1000;
+  boolean fetchLinks = true;
 
   public void init(HashMap<String, Object> configuration) {
     String sServerURL = null;
     try {
       sServerURL = Configurator.getS("url", configuration);
+      fetchLinks = Configurator.getB("fetchlinks", configuration);
       
-      System.out.println("fetching node data from URL: " + sServerURL);
+      System.out.println("fetching data from URL: " + sServerURL);
+      if (!fetchLinks) System.out.println("NOT fetching link information.");
       System.out.print("This may take a while ... ");
       
       BufferedReader in = new BufferedReader(new InputStreamReader(new URL(sServerURL).openStream()));
@@ -42,9 +48,9 @@ public class LatLonJsDataSource implements DataSource {
           String gatewayip = st.nextToken(); 
           String fqid  = st.nextToken();
 
-          ip = ip.substring(1,ip.length()-1); //strip single quotes
-          fqid = fqid.substring(1,fqid.length()-1);
-          gatewayip = gatewayip.substring(1,gatewayip.length()-1);
+          ip = stripQuotes(ip); //strip single quotes
+          fqid = stripQuotes(fqid);
+          gatewayip = stripQuotes(gatewayip);
 
           // Use ip or coordinates as fqid if tooltip is missing
           if (ip.equals("")) ip=null;
@@ -73,10 +79,36 @@ public class LatLonJsDataSource implements DataSource {
           }
           nodeByName.put(nnode.id, nnode);
 
-        }
-      }
+        } else
+        if ((fetchLinks) && (line.length()>5) && (line.substring(0,5).equals("PLink"))) {
+          StringTokenizer st = new StringTokenizer(line.substring(6,line.length()-2), ",", false);
+          String src = st.nextToken();
+          String dest = st.nextToken();
+          double lq  = Double.parseDouble(st.nextToken());
+          double nlq  = Double.parseDouble(st.nextToken());
+          double etx  = Double.parseDouble(st.nextToken());
 
-      System.out.println("finished.");
+          src = stripQuotes(src);
+          dest = stripQuotes(dest);
+
+          FreiNode nsrc = nodeByName.get(src);
+          FreiNode ndest = nodeByName.get(dest);
+
+          if (nsrc==null) { 
+            System.err.println(src+" not found.");
+            continue;
+          }
+          if (ndest==null) { 
+            System.err.println(dest+" not found.");
+            continue;
+          }
+
+          FreiLink link = new FreiLink(nsrc, ndest, (float)lq, (float)nlq, false);
+          links.add(link);
+      }
+    }
+
+    System.out.println("finished.");
       
     } catch (MalformedURLException mue) {
       System.out.println("failed!");
@@ -87,33 +119,33 @@ public class LatLonJsDataSource implements DataSource {
     }
   }
   
+  private String stripQuotes(String str) {
+    if (str.length()<=2) return null;
+    return str.substring(1,str.length()-1);
+  }
+
   public void addDataSourceListener(DataSourceListener dsl) {
     // TODO: Implement me.
   }
 
   public long getClosestUpdateTime(long time) {
-    // TODO: Implement me.
-    return 1;
+    return initTime;
   }
 
   public long getFirstUpdateTime() {
-    // TODO: Implement me.
-    return 1;
+    return initTime;
   }
 
   public long getFirstAvailableTime() {
-    // TODO: Implement me.
-    return 1;
+    return initTime;
   }
 
   public long getLastAvailableTime() {
-    // TODO: Implement me.
-    return 1;
+    return initTime;
   }
 
   public long getLastUpdateTime() {
-    // TODO: Implement me.
-    return 1;
+    return initTime;
   }
 
   public FreiNode getNodeByName(String id) {
@@ -138,8 +170,7 @@ public class LatLonJsDataSource implements DataSource {
   }
 
   public Vector<FreiLink> getLinks(long time) {
-    // TODO: Implement me.
-    return new Vector<FreiLink>();
+    return links;
   }
 
   public Hashtable<String, Float> getNodeAvailability(long time) {

@@ -184,6 +184,8 @@ public class LinkInfo {
     axis.setTickLabelFont(VisorFrame.smallerfont);
     axis.setTickLabelPaint(VisorFrame.fgcolor2);
   }
+
+  @SuppressWarnings("unchecked")
   private void sexupPlot(Plot plot) {
     if (plot instanceof CombinedDomainXYPlot) {
       List<Plot> subs = (List<Plot>)(((CombinedDomainXYPlot)plot).getSubplots());
