@@ -94,6 +94,7 @@ public class Visor extends JFrame implements WindowListener {
   JMenu     m_back    = new JMenu("Background");
   JMenuItem mi_select = new JMenuItem("Select...");
   JMenu     m_view    = new JMenu("View");
+  JMenuItem mi_interp = new JCheckBoxMenuItem("Show interpolated nodes");
   JMenuItem mi_filter = new JMenuItem("Display Filter...");
   JMenu     m_help    = new JMenu("Help");
   JMenuItem mi_about  = new JMenuItem("About");
@@ -128,24 +129,31 @@ public class Visor extends JFrame implements WindowListener {
     }
     Container c = this.getContentPane();
     
+    Color c_menu = Configurator.getC(new String[]{"colorscheme", "menu"});
+    if (c_menu==null) {c_menu = new Color(12,64,12);}
+    Color c_back = Configurator.getC(new String[]{"colorscheme", "background"});
+    if (c_menu==null) {c_back = Color.black;}
+
     m_source.add(mi_open);
     mi_about.addActionListener(viz);
     m_help.add(mi_about);
     //bar.add(m_source);
     //bar.add(m_back);
+    mi_interp.addActionListener(viz);
+    mi_interp.setSelected(true);
     mi_filter.addActionListener(viz);
+    m_view.add(mi_interp);
     m_view.add(mi_filter);
     bar.add(m_view);
     bar.add(m_help);
     this.setJMenuBar(bar);
 
-    Color c_menu = new Color(12,64,12);
     bar.setBackground(c_menu);
     m_view.setForeground(viz.fgcolor);
     m_help.setForeground(viz.fgcolor);
 
     c.add(viz);
-    c.setBackground(Color.black);
+    c.setBackground(c_back); /* this is overridden by the visorframe drawing routines anyway */
     this.pack();
     this.setVisible(true);
     this.addWindowListener(this);

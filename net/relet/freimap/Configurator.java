@@ -24,6 +24,7 @@ package net.relet.freimap;
 
 import java.io.*;
 import java.util.*;
+import java.awt.Color;
 
 import org.ho.yaml.*;
 
@@ -60,7 +61,8 @@ public class Configurator {
       try {
         parent = (HashMap<String, Object>)value;
       } catch (Exception ex) {
-        return null;
+        ex.printStackTrace();
+	return null;
       }
       value = parent.get(keys[i]);
     }
@@ -124,6 +126,25 @@ public class Configurator {
     } catch (Exception ex) {
     }
     return false;
+  }
+
+  public static Color getC(String[] keys) {
+    return getC(keys, null);
+  }
+  public static Color getC(String key, HashMap<String, Object> parent) {
+    return getC(new String[]{key}, parent);
+  }
+  public static Color getC(String[] keys, HashMap<String, Object> parent) {
+    try {
+      //int i= getI(keys, parent);
+      //if (i!=-1) return new Color(i, true);
+      //hack: apparently, jyaml does not support hex integers yet 
+      String s = getS(keys, parent);
+      if (s!=null) return new Color((int)(Long.decode(s).longValue()), true);
+    } catch (Exception ex) {
+      System.err.println(ex.getMessage());
+    }
+    return null;
   }
 
   @SuppressWarnings("unchecked")
