@@ -253,7 +253,7 @@ public class OlsrdDataSource implements DataSource {
           Thread.sleep(1000);
         }
       } catch (SocketTimeoutException ex) {
-        System.err.println("[OlsrdataSource] timeout while trying to connect. "+ex.getMessage());
+        System.err.println("[OlsrdDataSource] timeout while trying to connect. "+ex.getMessage());
         return;
       } catch (ConnectException ex) {
         System.err.println("connection to " + host + ":" + port + " failed. Detailed node data won't be available.");
