@@ -64,11 +64,11 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
                      mainfontbold = new Font("SansSerif", Font.BOLD, 12),
                      smallerfont = new Font("SansSerif", 0, 9);
 
-  public static Color fgcolor = new Color(20,200,20),     //used for text, lines etc., accessed globally! FIXME move these into colorscheme!
-                bgcolor = new Color(64,128,64,196),       //used for transparent backgrounds of most status boxes
-                fgcolor2 = new Color(150,150,255),        //used for foreground of link status boxes
-                bgcolor2 = new Color(40,40,192,196);      //used for transparent backgrounds of link status boxes
-  ColorScheme cs = ColorScheme.NO_MAP;
+  public static Color fgcolor  = Configurator.getCOrDefault(new String[]{"colorscheme", "foreground"},20,200,20,255),  //most lines
+                      bgcolor  = Configurator.getCOrDefault(new String[]{"colorscheme", "boxes"},64,128,64,196),       //used for transparent backgrounds of most status boxes
+                      fgcolor2 = Configurator.getCOrDefault(new String[]{"colorscheme", "foreground2"},150,150,255,255),   //used for foreground of link status boxes
+                      bgcolor2 = Configurator.getCOrDefault(new String[]{"colorscheme", "boxes2"},40,40,192,196),      //used for transparent backgrounds of link status boxes
+                      backcolor = Configurator.getCOrDefault(new String[]{"colorscheme", "background"},0,0,0,255);     //the main background
 
   int mousex=0, mousey=0;
 
@@ -144,7 +144,7 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
       buf=this.createImage(w,h);
     }
     Graphics2D g=(Graphics2D)buf.getGraphics();
-    g.setColor(cs.getColor(ColorScheme.Key.MAP_BACKGROUND));
+    g.setColor(backcolor);
     g.fillRect(0,0,w,h);
 
     //draw all layers

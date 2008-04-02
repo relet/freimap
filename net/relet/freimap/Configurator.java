@@ -131,6 +131,10 @@ public class Configurator {
   public static Color getC(String[] keys) {
     return getC(keys, null);
   }
+  public static Color getCOrDefault(String[] keys, int r, int g, int b, int a) {
+    Color c = getC(keys, null);
+    return (c==null)?new Color(r,g,b,a):c;
+  }
   public static Color getC(String key, HashMap<String, Object> parent) {
     return getC(new String[]{key}, parent);
   }

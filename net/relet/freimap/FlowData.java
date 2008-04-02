@@ -22,15 +22,24 @@
 
 package net.relet.freimap;
 
+/** FlowData contains the information associated with a single traffic flow.
+ */
 public class FlowData {
-  long begin, end, packets, bytes;
-  int protocol;
+  public long begin, end, packets, bytes;
+  public int protocol;
 
-  public FlowData (long b, long e, long c, long o, int p) {
-    begin    = b;
-    end      = e;
-    packets  = c;
-    bytes    = o;
-    protocol = p;
+  /** Create one flow information object 
+      @param  begin     timestamp of the first packet in this flow
+      @param  end       timestamp of the last packet associated with this flow
+      @param  packets   number of packets in this flow
+      @param  bytes     number of bytes in this flow
+      @param  protocol  traffic protocol used in this flow. Values conform to netflow specification. 
+  */
+  public FlowData (long begin, long end, long packets, long bytes, int protocol) {
+    this.begin    = begin;
+    this.end      = end;
+    this.packets  = packets;
+    this.bytes    = bytes;
+    this.protocol = protocol;
   }
 }

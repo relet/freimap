@@ -129,10 +129,8 @@ public class Visor extends JFrame implements WindowListener {
     }
     Container c = this.getContentPane();
     
-    Color c_menu = Configurator.getC(new String[]{"colorscheme", "menu"});
-    if (c_menu==null) {c_menu = new Color(12,64,12);}
-    Color c_back = Configurator.getC(new String[]{"colorscheme", "background"});
-    if (c_menu==null) {c_back = Color.black;}
+    Color c_menu = Configurator.getCOrDefault(new String[]{"colorscheme", "menu"},12,64,12,255);
+    Color c_back = Configurator.getCOrDefault(new String[]{"colorscheme", "background"},0,0,0,255);
 
     m_source.add(mi_open);
     mi_about.addActionListener(viz);

@@ -62,8 +62,7 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
                transyellow = new Color(255,255,0,127),
                transwhite  = new Color(255,255,255,127);
   public int   currentalpha = 255;
-  //ColorScheme cs = ColorScheme.NO_MAP;
-
+  
   DataSource source;
 
   FreiNode selectedNode;
