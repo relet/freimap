@@ -523,6 +523,13 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
         i.next().setDisplayFilter(match, filterRange.getSelectedIndex(), caseSens.isSelected(), regEx.isSelected());
       }
     } else 
+    if (e.getActionCommand().equals("Hide unlocated nodes")) {
+      Iterator<VisorLayer> i = layers.iterator();
+      boolean hideUnlocated = ((JCheckBoxMenuItem)e.getSource()).isSelected();
+      while(i.hasNext()) {
+        i.next().hideUnlocatedNodes(hideUnlocated);
+      }
+    } else
     if (e.getActionCommand().equals("zoomIn")) {
       modifyZoom(+1);
     } else 

@@ -24,31 +24,20 @@ package net.relet.freimap;
 
 import java.awt.Graphics2D;
 
-public interface VisorLayer {
+public abstract class VisorLayer {
   public static final int VISIBILITY_NOT  = 0;
   public static final int VISIBILITY_FULL = 1;
   public static final int VISIBILITY_DIM  = 2;
+
+  protected Converter converter;
 
   /**
    * Paints the layer.
    * 
    * @param g, a Graphics2D object.
    */
-  public void paint(Graphics2D g);
+  public abstract void paint(Graphics2D g);
 
-  /**
-   * Indiciates whether this VisorLayer instance is transparent. 
-   * 
-   * @return true or false
-   */
-
-  public boolean isTransparent();
-
-  /**
-   * Attempts to set transparency to this VisorLayer.
-   */
-
-  public void setTransparent(boolean t);
 
   /**
    * returns the DataSource of this layer. If the layer is just decorative, returns null.
@@ -56,13 +45,31 @@ public interface VisorLayer {
    * @return null or DataSource
    */
 
-  public DataSource getSource();
+  public abstract DataSource getSource();
+
+  /**
+   * Indiciates whether this VisorLayer instance is transparent. 
+   * 
+   * @return true or false
+   */
+  public boolean isTransparent() {
+    return false;
+  }
+
+  /**
+   * Attempts to set transparency to this VisorLayer.
+   */
+
+  public void setTransparent(boolean t) {
+  }
 
  /**
    * Sets the scaling converter for this background.
    */
 
-  public void setConverter(Converter c);
+  public void setConverter(Converter conv) {
+    converter = conv;
+  }
 
  /**
   * Sets the width and height of the section the layer is
@@ -75,7 +82,7 @@ public interface VisorLayer {
   * @param w
   * @param h
   */
- public void setDimension(int w, int h);
+ public void setDimension(int w, int h) {}
 
  /**
   * Sets the <code>VisorLayer</code>s zoom.
@@ -86,16 +93,19 @@ public interface VisorLayer {
   * 
   * @param zoom
   */
- public void setZoom(int zoom);
+ public void setZoom(int zoom) {}
 
  /** retrieves selected layer visibility */
- public int getVisibility();
+ public int getVisibility() {
+   return VISIBILITY_FULL;
+ }
  /** toggles visibility between available modes */
- public void toggleVisibility();
+ public void toggleVisibility() {}
  /** sets or unsets display filter */
  public static final int FILTER_IP         = 0 ;
  public static final int FILTER_IDENTIFIER = 1 ;
- public void setDisplayFilter(String match, int type, boolean cases, boolean regex);
+ public void setDisplayFilter(String match, int type, boolean cases, boolean regex) {}
+ public void hideUnlocatedNodes(boolean hide) {}
 
  /**
   * Sets the current point in time to be displayed
@@ -103,9 +113,9 @@ public interface VisorLayer {
   * @param crtTime, an unix time stamp
   * @return true, if the layer has to be repainted consequently
   */
- public boolean setCurrentTime(long crtTime);
+ public boolean setCurrentTime(long crtTime) { return false; }
 
- public void mouseMoved(double lat, double lon);
- public void mouseClicked(double lat, double lon, int button);
+ public void mouseMoved(double lat, double lon) {}
+ public void mouseClicked(double lat, double lon, int button) {}
 
 }

@@ -31,10 +31,7 @@ import java.util.regex.*;
 
 import javax.swing.border.LineBorder;
 
-public class NodeLayer implements VisorLayer, DataSourceListener {
-
-  Converter converter;
-
+public class NodeLayer extends VisorLayer implements DataSourceListener {
   double scale;  // current scaling
   int zoom;       // zoom factor, according to OSM tiling
   int w, h;    //screen width, hight
@@ -49,10 +46,12 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
   //FIXME the following paragraph is identical and static in VisorFrame. Use these definitions and remove the paragraph.
   public static Font mainfont = new Font("SansSerif", 0, 12),
                      smallerfont = new Font("SansSerif", 0, 9);
-  public Color fgcolor = new Color(20,200,20),     //used for text, lines etc.
-               bgcolor = new Color(64,128,64,196),       //used for transparent backgrounds of most status boxes
-               fgcolor2 = new Color(150,150,255),       //used for foreground of link status boxes
-               bgcolor2 = new Color(40,40,192,196),       //used for transparent backgrounds of link status boxes
+
+  public Color fgcolor = VisorFrame.fgcolor,
+               bgcolor = VisorFrame.bgcolor,
+               fgcolor2 = VisorFrame.fgcolor2,
+               bgcolor2 = VisorFrame.bgcolor2,
+
                activeblue = Color.cyan,
                activeyellow = Color.yellow,
                activegreen = Color.green,
@@ -82,6 +81,8 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
   int     filterType  = 0;
   boolean filterCase  = false;
   boolean filterRegEx = false;
+
+  boolean hideUnlocated = Configurator.getB(new String[]{"display", "hideUnlocated"});
 
   public NodeLayer(DataSource source) {
     this.source=source;
@@ -148,7 +149,7 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
     if ((selectedLink != null) && ((selectedLink.from.lat == selectedLink.from.DEFAULT_LAT) || (selectedLink.to.lat == selectedLink.to.DEFAULT_LAT))) {
       selectedLink = null;
     } 
-    if (selectedLink != null) {
+    if ((selectedLink != null) && matchFilter(selectedLink.from) && matchFilter(selectedLink.to)) {
       g.setStroke(selectedStroke);
       g.setColor(fgcolor2);
       if (selectedLink.to.equals(uplink)) {
@@ -167,8 +168,7 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
     if ((links != null) && (links.size()>0)) {
       for(int i = 0; i < links.size(); i++) {
         FreiLink link = links.elementAt(i);
-
-        if (!(matchFilter(link.from)||matchFilter(link.to))) continue;
+        if (!(matchFilter(link.from)&&matchFilter(link.to))) continue;
 
         boolean isneighbourlink = (link.from.equals(selectedNode)||link.to.equals(selectedNode));
         if (link.to.equals(uplink)) {
@@ -274,7 +274,7 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
         boolean showNodeInfo = true;
 
         //draw selected node
-        if (selectedNode != null) {
+        if ((selectedNode != null) && matchFilter(selectedNode)) {
     	  double nsize = Math.min(15,Math.round(0.0006 * scale));
     	  nx = converter.lonToViewX(selectedNode.lon);
           ny = converter.latToViewY(selectedNode.lat);
@@ -521,14 +521,6 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
 
 
  /**
-   * Sets the scaling converter for this background.
-   */
-
-  public void setConverter(Converter c) {
-    this.converter = c;
-  }
-
- /**
   * Sets the width and height of the section the layer is
   * showing.
   * 
@@ -608,8 +600,16 @@ public class NodeLayer implements VisorLayer, DataSourceListener {
    filterRegEx=regex;
  }
 
+ public void hideUnlocatedNodes(boolean hide) {
+   hideUnlocated = hide;
+ }
+
+
  boolean matchFilter(FreiNode node) {
+   if (hideUnlocated && node.unlocated) { return false;}
+   
    if (filter==null) return true;
+   
    int regexCase = filterCase?0:Pattern.CASE_INSENSITIVE;
    try {
      switch (filterType) {

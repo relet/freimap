@@ -25,24 +25,10 @@ import net.relet.freimap.DataSource;
  * @author Robert Schuster <robertschuster@fsfe.org>
  *
  */
-public abstract class Background implements VisorLayer {
+public abstract class Background extends VisorLayer {
 
 	protected int zoom, width, height;
   protected int visible = VISIBILITY_FULL;
-	
-	protected Converter converter;
-	
-	/**
-	 * Sets the {@link Converter} instance to be used for this
-	 * <code>Background</code>. This method must be called at least
-	 * once with a non-null value.
-	 * 
-	 * @param conv
-	 */
-	public void setConverter(Converter conv)
-	{
-		converter = conv;
-	}
 
 	/**
 	 * Sets the width and height of the section the background is
@@ -138,23 +124,6 @@ public abstract class Background implements VisorLayer {
 			};
 		};
 	}
-
-        /**
-	 * Indiciates whether this VisorLayer instance is transparent. 
-	 * 
-	 * @return false by default, may be overridden.
-	 */
-        public boolean isTransparent() {
-          return false;
-        }
-
-        /**
-	 * Attempts to set transparency to this VisorLayer. Will not have any action unless overridden by an instance. 
-	 * 
-	 * @return false by default, may be overridden.
-	 */
-        public void setTransparent(boolean t) {
-        }
 
 	/**
 	 * Creates a <code>Background</code> which paints 

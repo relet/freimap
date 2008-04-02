@@ -94,7 +94,7 @@ public class Visor extends JFrame implements WindowListener {
   JMenu     m_back    = new JMenu("Background");
   JMenuItem mi_select = new JMenuItem("Select...");
   JMenu     m_view    = new JMenu("View");
-  JMenuItem mi_interp = new JCheckBoxMenuItem("Show interpolated nodes");
+  JMenuItem mi_interp = new JCheckBoxMenuItem("Hide unlocated nodes");
   JMenuItem mi_filter = new JMenuItem("Display Filter...");
   JMenu     m_help    = new JMenu("Help");
   JMenuItem mi_about  = new JMenuItem("About");
@@ -138,7 +138,7 @@ public class Visor extends JFrame implements WindowListener {
     //bar.add(m_source);
     //bar.add(m_back);
     mi_interp.addActionListener(viz);
-    mi_interp.setSelected(true);
+    mi_interp.setSelected(Configurator.getB(new String[]{"display", "hideUnlocated"}));
     mi_filter.addActionListener(viz);
     m_view.add(mi_interp);
     m_view.add(mi_filter);
