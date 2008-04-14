@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import javax.swing.ImageIcon;
 
 import net.relet.freimap.Configurator;
-import net.relet.freimap.OSMMercatorProjection;
+import net.relet.freimap.OsmMercatorProjection;
 
 /**
  * In a distant future this class will be a fully featured cache for downloaded
@@ -114,10 +114,10 @@ class TileCache extends Thread {
 
 	void paintTiles(Graphics2D g, int zoom, int wx, int wy, int ww, int wh) {
 		int max = (int) Math.pow(2, zoom) - 1;
-		int x1 = OSMMercatorProjection.worldToTile(Math.max(wx, 0)); 
-		int x2 = Math.min(OSMMercatorProjection.worldToTile(wx + ww), max); 
-		int y1 = OSMMercatorProjection.worldToTile(Math.max(wy, 0)); 
-		int y2 = Math.min(OSMMercatorProjection.worldToTile(wy + wh), max); 
+		int x1 = OsmMercatorProjection.worldToTile(Math.max(wx, 0)); 
+		int x2 = Math.min(OsmMercatorProjection.worldToTile(wx + ww), max); 
+		int y1 = OsmMercatorProjection.worldToTile(Math.max(wy, 0)); 
+		int y2 = Math.min(OsmMercatorProjection.worldToTile(wy + wh), max); 
 		
 		if (zoom <= 18) {
  		  for (int ty = y1; ty <= y2; ty++) {
