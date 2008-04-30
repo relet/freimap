@@ -27,7 +27,7 @@ datasources:
     url: "file:data/ffmap.xml"
 
   olsrd-localhost:
-    class: net.relet.freimap.OLSRDDataSource
+    class: net.relet.freimap.OlsrdDataSource
     host: localhost
     port: 2004
     nodesource: nodes-in-berlin 
