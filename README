@@ -5,6 +5,12 @@ Copyleft by:
  * Thomas Hirsch <thomas hirsch gmail com>
  * Robert Schuster <robertschuster@fsfe.org>
 
+== README FIRST ==
+
+This is a static text file. Static information tends to get out of date each time you're not looking. If possible, please refer to the documentation in the freimap wiki at http://relet.net/trac/freimap for the latest documentation.
+
+----
+
 Freimap is an Open Source visualization and analysis framework for (mostly) mesh networks, such as for example Freifunk.net. It can read many a different data source and display them as different layers. The network can be browsed and queried in real time, and a time bar allows to trace back to past events. Some statistics of the topology and network traffic may also be generated.
 
 A thorough documentation of the project is still expected to fall from the sky. Until then, here's a small outlook of what you can get running and how.
