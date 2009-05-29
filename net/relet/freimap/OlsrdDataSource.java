@@ -25,6 +25,7 @@ package net.relet.freimap;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 
 public class OlsrdDataSource implements DataSource {
   DotPluginListener dot;
@@ -46,6 +47,9 @@ public class OlsrdDataSource implements DataSource {
   public OlsrdDataSource() {
   }
   public void init(HashMap<String, Object> conf) {
+    //accept either
+    String url = Configurator.getS("url", conf);
+    //or
     String host = Configurator.getS("host", conf);
     int port = Configurator.getI("port", conf);
 
@@ -53,12 +57,20 @@ public class OlsrdDataSource implements DataSource {
     //System.out.println("nodefile = "+nodefile);
 
     sNodeSource = Configurator.getS("nodesource", conf);
-
-    if (port==-1) { 
+    int interval = Configurator.getI("interval", conf);
+    
+    if ((url == null) && (port==-1)) { 
       System.err.println("invalid port parameter "+port);
       System.exit(1);
     }
-    dot = new DotPluginListener(host, port, this);
+    if (url == null) {
+      dot = new DotPluginListener(host, port, this);
+    } else {
+      dot = new DotPluginListener(url, this);
+    }
+    if (interval>0) {
+      dot.setInterval(interval);
+    }
   }
   
   @SuppressWarnings("unchecked")
@@ -196,7 +208,13 @@ public class OlsrdDataSource implements DataSource {
     BufferedReader in;
     String host;
     int port;
+    String url = null;
+    int interval=10000;
     OlsrdDataSource parent;
+
+    Pattern reNode = Pattern.compile("^(\\d+) \\[label=\"(.*?)\",");
+    Pattern reLink = Pattern.compile("^(\\d+) -> (\\d+) \\[");
+    Pattern reETX  = Pattern.compile("^label=\"(.*?)\"");
     
     public DotPluginListener(String host, int port, OlsrdDataSource parent) {
       this.parent=parent;
@@ -204,24 +222,83 @@ public class OlsrdDataSource implements DataSource {
       this.port=port;
       System.setProperty("java.net.IPv4Stack", "true"); //not necessary, but works around a bug in older java versions.
     }
+    public DotPluginListener(String url, OlsrdDataSource parent) {
+      this.parent=parent;
+      this.url=url;
+      System.setProperty("java.net.IPv4Stack", "true"); //not necessary, but works around a bug in older java versions.
+    }
+    public void setInterval(int i) {
+      this.interval = i;
+    }
+    public int getInterval() {
+      return this.interval;
+    }
 
     public void run() {
+      InetSocketAddress destination = null;
       Vector<FreiLink> linkData = null;
+      HashMap<String, FreiNode> nodeIds = null;
       try {
-        InetSocketAddress destination = new InetSocketAddress(host, port);
+        if (host != null) {
+          destination = new InetSocketAddress(host, port);
+        }
         while (true) { //reconnect upon disconnection
-          Socket s = new Socket();
-	        //s.setSoTimeout(10000);
-          s.connect(destination, 25000);
-          in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+          if (url != null) {
+            System.out.println("Fetching topology from url "+url);
+            in =  new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+          } else {
+            Socket s = new Socket();
+	          //s.setSoTimeout(10000);
+            s.connect(destination, 25000);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+          }
+          String from=null,to=null;
           while (in!=null) {
             String line=in.readLine();
             { //this used to be a try-catch statement
               if (line==null) break;
+              line = line.trim();
               if (line.equals("digraph topology")) {
                 if (linkData!=null) parent.addLinkData(System.currentTimeMillis()/1000, linkData);
                 linkData = new Vector<FreiLink>();
-              } else if ((linkData != null) && (line.length()>0) && (line.charAt(0)=='"')) {
+                nodeIds = new HashMap<String, FreiNode>();
+              } else if (linkData != null) {  //yeah, some regexp parsing might be more adequate here
+                Matcher m = reNode.matcher(line);
+                if (m.matches()) {
+                  String id = m.group(1);
+                  String snode = m.group(2);
+                  FreiNode node = getNodeByName(snode);
+                  if (node == null) {
+                    node = new FreiNode(snode);
+                    generatedNodes.put(snode, node);
+                    if (listener!=null) listener.nodeListUpdate(node);
+                  } 
+                  nodeIds.put(id, node);
+                } else {
+                  m = reLink.matcher(line);
+                  if (m.matches()) {
+                    from = m.group(1);
+                    to   = m.group(2);
+                  } else {
+                    m=reETX.matcher(line);
+                    if (m.matches()) {
+                      String setx = m.group(1);
+                      FreiNode nfrom = nodeIds.get(from);
+                      FreiNode nto   = nodeIds.get(to);
+                      float etx = Float.parseFloat(setx);
+                      if (nfrom == null) {
+                        System.err.println("ERROR: MISSING "+from);
+                      }
+                      if (nto == null) {
+                        System.err.println("ERROR: MISSING TO "+to);
+                      }
+                      linkData.add(new FreiLink(nfrom, nto, etx, false));
+                    }
+                  }
+                }
+              }
+/* THIS IS OLD CODE, WHICH SHOULD WORK FOR OLSRD GRAPHS, POSSIBLY OF OLDER VERSIONS */
+/*              } else if ((linkData != null) && (line.length()>0) && (line.charAt(0)=='"')) {
                 StringTokenizer st=new StringTokenizer(line, "\"", false);
                 String from = st.nextToken();
 		//if (from.indexOf("/")>-1) { from = from.substring(0, from.indexOf("/")); }
@@ -245,12 +322,13 @@ public class OlsrdDataSource implements DataSource {
                             generatedNodes.put(to, nto);
                             if (listener!=null) listener.nodeListUpdate(nto);
                   }
+                  System.out.println("adding one.");
                   linkData.add(new FreiLink(nfrom, nto, etx, hna));
                 }
-              } 
+              } */
             }
           }
-          Thread.sleep(1000);
+          Thread.sleep(this.getInterval());
         }
       } catch (SocketTimeoutException ex) {
         System.err.println("[OlsrdDataSource] timeout while trying to connect. "+ex.getMessage());

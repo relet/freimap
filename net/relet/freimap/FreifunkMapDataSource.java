@@ -110,6 +110,7 @@ public class FreifunkMapDataSource implements DataSource {
           if (height!=null) nnode.attributes.put("height", new Integer(Integer.parseInt(height)));
           nodes.add(nnode);
           nodeByName.put(nnode.id, nnode);
+          nodeByName.put(nnode.fqid, nnode); //allow lookup by fqid just as well
         }
         continue;
       } 
@@ -117,6 +118,7 @@ public class FreifunkMapDataSource implements DataSource {
       if (height!=null) nnode.attributes.put("height", new Integer(Integer.parseInt(height)));
       nodes.add(nnode);
       nodeByName.put(nnode.id, nnode);
+      nodeByName.put(nnode.fqid, nnode); //allow lookup by fqid just as well
     }
   }
 
