@@ -112,7 +112,10 @@ public class OlsrdDataSource implements DataSource {
     }
     FreiNode node= knownNodes.get(id);
     if (node!=null) return node;
-    else return generatedNodes.get(id);
+    else {
+      System.out.println("Not found: "+id);
+      return generatedNodes.get(id);
+    }
   }
   
   public Hashtable<String, Float> getNodeAvailability(long time) {
@@ -287,7 +290,7 @@ public class OlsrdDataSource implements DataSource {
                       String setx = m.group(1);
                       FreiNode nfrom = nodeIds.get(from);
                       FreiNode nto   = nodeIds.get(to);
-                      float etx = setx=="INFINITE"?0.0f:Float.parseFloat(setx);
+                      float etx = setx.equals("INFINITE")?0.0f:Float.parseFloat(setx);
                       if (nfrom == null) {
                         System.err.println("ERROR: MISSING "+from);
                       }
@@ -309,7 +312,7 @@ public class OlsrdDataSource implements DataSource {
                   st.nextToken();
                   String setx = st.nextToken();
                   boolean hna = setx.equals("HNA"); 
-		  float etx = hna?0:(setx=="INFINITE"?0.0f:Float.parseFloat(setx));
+		  float etx = hna?0:(setx.equals("INFINITE")?0.0f:Float.parseFloat(setx));
                   FreiNode nfrom = getNodeByName(from),
                            nto   = getNodeByName(to);
                   if (nfrom == null) {
