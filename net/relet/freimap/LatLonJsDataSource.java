@@ -77,6 +77,7 @@ public class LatLonJsDataSource implements DataSource {
           } else {
             nnode.attributes.put("Gateway", "OTHER: "+gatewayip);
           }
+          nodeByName.put(nnode.fqid, nnode);
           nodeByName.put(nnode.id, nnode);
 
         } else
@@ -156,6 +157,7 @@ public class LatLonJsDataSource implements DataSource {
     nodes.remove(node); //just in case
     nodes.add(node);
     nodeByName.put(node.id, node);
+    nodeByName.put(node.fqid, node);
   }
 
 

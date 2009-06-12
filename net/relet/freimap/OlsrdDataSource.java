@@ -238,6 +238,7 @@ public class OlsrdDataSource implements DataSource {
       InetSocketAddress destination = null;
       Vector<FreiLink> linkData = null;
       HashMap<String, FreiNode> nodeIds = null;
+      boolean usingWebServiceFormat = false;
       try {
         if (host != null) {
           destination = new InetSocketAddress(host, port);
@@ -245,6 +246,7 @@ public class OlsrdDataSource implements DataSource {
         while (true) { //reconnect upon disconnection
           if (url != null) {
             System.out.println("Fetching topology from url "+url);
+            usingWebServiceFormat = true;
             in =  new BufferedReader(new InputStreamReader(new URL(url).openStream()));
           } else {
             Socket s = new Socket();
@@ -262,7 +264,7 @@ public class OlsrdDataSource implements DataSource {
                 if (linkData!=null) parent.addLinkData(System.currentTimeMillis()/1000, linkData);
                 linkData = new Vector<FreiLink>();
                 nodeIds = new HashMap<String, FreiNode>();
-              } else if (linkData != null) {  //yeah, some regexp parsing might be more adequate here
+              } else if ((usingWebServiceFormat) && (linkData != null)) {  //yeah, some regexp parsing might be more adequate here
                 Matcher m = reNode.matcher(line);
                 if (m.matches()) {
                   String id = m.group(1);
@@ -296,15 +298,13 @@ public class OlsrdDataSource implements DataSource {
                     }
                   }
                 }
-              }
-/* THIS IS OLD CODE, WHICH SHOULD WORK FOR OLSRD GRAPHS, POSSIBLY OF OLDER VERSIONS */
-/*              } else if ((linkData != null) && (line.length()>0) && (line.charAt(0)=='"')) {
+              } else if ((linkData != null) && (line.length()>0) && (line.charAt(0)=='"')) { //using local OLSR graph format
                 StringTokenizer st=new StringTokenizer(line, "\"", false);
-                String from = st.nextToken();
+                from = st.nextToken();
 		//if (from.indexOf("/")>-1) { from = from.substring(0, from.indexOf("/")); }
                 st.nextToken();
                 if (st.hasMoreTokens()) { //otherwise it's a gateway node!
-                  String to = st.nextToken();
+                  to = st.nextToken();
    		  //if (to.indexOf("/")>-1) { to = to.substring(0, to.indexOf("/")); }
                   st.nextToken();
                   String setx = st.nextToken();
@@ -325,7 +325,7 @@ public class OlsrdDataSource implements DataSource {
                   System.out.println("adding one.");
                   linkData.add(new FreiLink(nfrom, nto, etx, hna));
                 }
-              } */
+              } 
             }
           }
           Thread.sleep(this.getInterval());
