@@ -309,7 +309,7 @@ public class OlsrdDataSource implements DataSource {
                   st.nextToken();
                   String setx = st.nextToken();
                   boolean hna = setx.equals("HNA"); 
-                  float etx = hna?0:Float.parseFloat(setx);
+                  float etx = hna?0:(setx=="INFINITE"?0.0:Float.parseFloat(setx));
                   FreiNode nfrom = getNodeByName(from),
                            nto   = getNodeByName(to);
                   if (nfrom == null) {
