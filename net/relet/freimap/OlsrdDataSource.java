@@ -287,7 +287,7 @@ public class OlsrdDataSource implements DataSource {
                       String setx = m.group(1);
                       FreiNode nfrom = nodeIds.get(from);
                       FreiNode nto   = nodeIds.get(to);
-                      float etx = Float.parseFloat(setx);
+                      float etx = setx=="INFINITE"?0.0f:Float.parseFloat(setx);
                       if (nfrom == null) {
                         System.err.println("ERROR: MISSING "+from);
                       }
@@ -309,7 +309,7 @@ public class OlsrdDataSource implements DataSource {
                   st.nextToken();
                   String setx = st.nextToken();
                   boolean hna = setx.equals("HNA"); 
-                  float etx = hna?0:(setx=="INFINITE"?0.0:Float.parseFloat(setx));
+		  float etx = hna?0:(setx=="INFINITE"?0.0f:Float.parseFloat(setx));
                   FreiNode nfrom = getNodeByName(from),
                            nto   = getNodeByName(to);
                   if (nfrom == null) {
