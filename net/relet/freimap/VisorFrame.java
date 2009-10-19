@@ -377,6 +377,9 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
 
     long time = (long)(fUT + (lUT - fUT) * ((double)x) / (timelinex1-timelinex0));
     crtTime=time;
+    for (int i=0;i<layers.size();i++) {
+      layers.elementAt(i).setCurrentTime(crtTime);
+    }
   }
 
   int mrefx, mrefy, mouseMode, refPosition, refZoom;
@@ -459,9 +462,8 @@ public class VisorFrame extends JPanel implements ActionListener, ComponentListe
     if (playing) crtTime += 1;
     boolean repaint = false;
     for (int i=0; i<layers.size(); i++) {
-      DataSource source = layers.elementAt(i).getSource();
-      if (source!=null) {
-        repaint = repaint || layers.elementAt(i).setCurrentTime(crtTime);
+      if (layers.elementAt(i).setCurrentTime(crtTime)) {
+        repaint=true;
       }
     }
     if (repaint) this.repaint();

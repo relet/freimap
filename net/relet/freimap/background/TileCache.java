@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.ImageIcon;
+import java.io.FileNotFoundException;
 
 import net.relet.freimap.Configurator;
 import net.relet.freimap.OsmMercatorProjection;
@@ -83,8 +84,10 @@ class TileCache extends Thread {
 				continue;
 
 			//System.err.println("fetching image:" + t.url);
-			
-			t.loadImage();
+      try {
+        t.loadImage();
+      } catch (Exception ex) {
+      }
 		}
 	}
 

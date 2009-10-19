@@ -1,4 +1,4 @@
-/* net.relet.freimap.Visor.java
+/* net.relet.freiconimap.Visor.java
 
   This file is part of the freimap software available at freimap.berlios.de
 
@@ -74,6 +74,7 @@ public class Visor extends JFrame implements WindowListener {
           String id   = i.next();
           HashMap<String, Object> subconfig = (HashMap<String, Object>) bgs.get(id);
           Background newbg = Background.createBackground(subconfig);
+          newbg.init(subconfig);
           backgrounds.put(id, newbg);
         }
       }
@@ -87,7 +88,6 @@ public class Visor extends JFrame implements WindowListener {
   
   VisorFrame viz;
 
-  /* this will be implemented some future time */
   JMenuBar  bar = new JMenuBar();
   JMenu     m_source  = new JMenu("Source");
   JMenuItem mi_open   = new JMenuItem("Open...");

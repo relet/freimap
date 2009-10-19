@@ -23,6 +23,7 @@ import net.relet.freimap.DataSource;
  * 
  * 
  * @author Robert Schuster <robertschuster@fsfe.org>
+ * @author Thomas Hirsch <thomas.hirsch gmail com>
  *
  */
 public abstract class Background extends VisorLayer {
@@ -59,8 +60,6 @@ public abstract class Background extends VisorLayer {
    * @return null
    */
   public DataSource getSource() { return null; }
-
-  public boolean setCurrentTime(long crtTime) { return false; }
 
 	/**
 	 * Sets the <code>Background</code>s zoom.
@@ -144,6 +143,23 @@ public abstract class Background extends VisorLayer {
 	{
 		return new ImagesBackground(config);
 	}
+  
+  @SuppressWarnings("unchecked")
+  public static Background createOtherBackground(HashMap<String, Object> config) {
+    try {
+      String claz = Configurator.getS("type", config);
+      Class<Background> cback=(Class<Background>)Class.forName(claz); //this cast cannot be checked!
+      Background back = cback.newInstance();
+      return back;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return null;
+    }
+  }
+ 
+  public void init(HashMap<String, Object> config) {
+    //not used. may be overridden by subclasses ("other" backgrounds, mostly)
+  }
 
 	/**
 	 * Evaluates the given <code>String</code> and creates
@@ -171,6 +187,11 @@ public abstract class Background extends VisorLayer {
 
 		if (type.equalsIgnoreCase("openstreetmap"))
 			return createOpenStreetMapBackground(config);
+      
+    Background other = createOtherBackground(config);
+    if (other!=null) {
+      return other;
+    }
 
 		System.err.println("warning: no valid background specified (" + type
 				+ "). Defaulting to blank.");

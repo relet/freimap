@@ -113,7 +113,9 @@ public abstract class VisorLayer {
   * @param crtTime, an unix time stamp
   * @return true, if the layer has to be repainted consequently
   */
- public boolean setCurrentTime(long crtTime) { return false; }
+ public boolean setCurrentTime(long crtTime) {
+   return false;
+ }
 
  public void mouseMoved(double lat, double lon) {}
  public void mouseClicked(double lat, double lon, int button) {}
